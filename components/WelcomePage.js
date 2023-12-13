@@ -12,7 +12,7 @@ const WelcomePage = () => {
       <Typography variant="h4" gutterBottom>
         Welcome to the EV Charging App!
       </Typography>
-      <Typography variant="body1" align="center">
+      <Typography variant="body1" >
         Explore nearby EV charging stations at just one simple step. Find Stations below!
       </Typography>
 
