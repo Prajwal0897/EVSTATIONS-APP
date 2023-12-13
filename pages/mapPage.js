@@ -14,7 +14,7 @@ const ChargingMap = () => {
           </Button>
         </Link>
         
-    <Container maxWidth="xl" sx={{ marginTop: 2, height: '80vh' }}>
+    <Container maxWidth="lg" sx={{ marginTop: 2, height: '60vh' }}>
       <iframe
         src="https://map.openchargemap.io/?mode=embedded"
         allow="geolocation"
