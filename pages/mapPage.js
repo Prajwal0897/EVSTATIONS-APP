@@ -16,7 +16,7 @@ const ChargingMap = () => {
           // Update the iframe source with your API key and the current location
           const iframe = document.getElementById('chargingMapIframe');
           if (iframe) {
-            iframe.src = `https://www.google.com/maps/embed/v1/search?key=${APIKEY}&q=charging+station&center=${latitude},${longitude}&zoom=10`;
+            iframe.src = `https://www.google.com/maps/embed/v1/search?key=${APIKEY}&q=charging+station&center=${latitude},${longitude}&zoom=12`;
           }
         },
         (error) => {
@@ -36,13 +36,14 @@ const ChargingMap = () => {
         </Button>
       </Link>
 
-      <Container maxWidth="lg" sx={{ marginTop: 2, height: '70vh' }}>
+      <Container maxWidth="xl" sx={{ marginTop: 2, height: '70vh' }}>
         {/* Replace YOUR_API_KEY with the actual API key you obtained from the Google Cloud Console */}
         <iframe
           id="chargingMapIframe"
           //src={`https://www.google.com/maps/embed/v1/search?key=${APIKEY}&q=charging+station&zoom=10`}
           allowFullScreen
-          frameBorder="0"
+          frameborder="0" 
+          referrerpolicy="no-referrer-when-downgrade"
           width="100%"
           height="100%"
         ></iframe>
