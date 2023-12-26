@@ -44,7 +44,7 @@ const WelcomePage = () => {
             <Button
               variant="outlined"
               color="success"
-              sx={{ height: "25vh", width: "20vh", fontFamily: "cursive" }}
+              sx={{ height: "25vh", width: "20vh", fontFamily: "sans-serif" }}
             >
               <FlashOnIcon />
               Find EV Stations
@@ -59,7 +59,7 @@ const WelcomePage = () => {
             <Button
               variant="outlined"
               color="info"
-              sx={{ height: "25vh", width: "20vh", fontFamily: "cursive" }}
+              sx={{ height: "25vh", width: "20vh", fontFamily: "sans-serif" }}
             >
               <LocalGasStationIcon />
               Find Fuel Stations

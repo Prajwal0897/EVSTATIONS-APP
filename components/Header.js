@@ -21,7 +21,7 @@ const Header = () => {
             variant="h6"
             style={{ color: "teal", fontFamily: "cursive", fontSize: 32 }}
           >
-            Tap N GO!!
+            TAP N GO!!
           </Typography>
         </Box>
       </Toolbar>
