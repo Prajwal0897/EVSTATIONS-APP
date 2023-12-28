@@ -19,9 +19,9 @@ const WelcomePage = () => {
         backgroundColor:"teal"
       }}
     >
-      <Typography variant="h4" gutterBottom fontFamily={'sans-serif'} color={'white'}>
+      {/* <Typography variant="h4" gutterBottom fontFamily={'sans-serif'} color={'white'}>
         Fill up Fuel !!
-      </Typography>
+      </Typography> */}
       <Typography variant="body1" fontFamily={'sans-serif'} color={'white'}>
         Explore nearby EV charging and fueling stations at just one Tap!
       </Typography>
