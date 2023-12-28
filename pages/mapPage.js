@@ -1,5 +1,5 @@
 // components/ChargingMap.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import { Container, Typography, Button } from "@mui/material";
 import Link from "next/link";
@@ -7,29 +7,222 @@ import { useRouter } from "next/router";
 
 const ChargingMap = () => {
   const router = useRouter();
+  const [locationPermission, setLocationPermission] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [map, setMap] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [getdirections, setgetdirections] = useState([]);
+  const [infoWindow, setInfoWindow] = useState(null);
   const stationType = router.query.type || "charging_stations";
-  const APIKEY = "AIzaSyDcKMmZlfxMD9ReoN9ipqhSkI3rMS5AzYE";
+  const APIKEY = "AIzaSyDcKMmZlfxMD9ReoN9ipqhSkI3rMS5AzYE"; // Replace with your actual API key
+
   useEffect(() => {
     // Check if geolocation is supported by the browser
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
+    if (navigator.permissions) {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then((permissionStatus) => {
+          setLocationPermission(permissionStatus.state);
 
-          // Update the iframe source with your API key and the current location
-          const iframe = document.getElementById("chargingMapIframe");
-          if (iframe) {
-            iframe.src = `https://www.google.com/maps/embed/v1/search?key=${APIKEY}&q=${stationType}&center=${latitude},${longitude}&zoom=12`;
+          if (permissionStatus.state === "granted") {
+            // Geolocation is allowed, proceed to get the current position
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const { latitude, longitude } = position.coords;
+                setCurrentLocation({ latitude, longitude });
+
+                // Load the Google Maps JavaScript API
+                const script = document.createElement("script");
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${APIKEY}&libraries=places&callback=initMap`;
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+              },
+              (error) => {
+                console.error("Error getting current location:", error);
+              }
+            );
           }
-        },
-        (error) => {
-          console.error("Error getting current location:", error);
-        }
-      );
+        })
+        .catch((error) => {
+          console.error("Error checking geolocation permission:", error);
+        });
     } else {
       console.error("Geolocation is not supported by your browser");
     }
-  }, []); // Run the effect only once on component mount
+  }, [stationType]); // Re-run the effect if the stationType changes
+
+  const initMap = () => {
+    if (currentLocation) {
+      const mapInstance = new window.google.maps.Map(
+        document.getElementById("chargingMapIframe"),
+        {
+          center: {
+            lat: currentLocation.latitude,
+            lng: currentLocation.longitude,
+          },
+          zoom: 12,
+        }
+      );
+
+      setMap(mapInstance);
+
+      // Add a custom marker for the current location
+      const currentLocationMarker = new window.google.maps.Marker({
+        position: {
+          lat: currentLocation.latitude,
+          lng: currentLocation.longitude,
+        },
+        map: mapInstance,
+        title: "Current Location",
+        icon: {
+          url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png", // Change to the desired marker icon URL
+        },
+      });
+
+      // Perform a text search for charging stations near the current location
+      const placesService = new window.google.maps.places.PlacesService(
+        mapInstance
+      );
+      placesService.textSearch(
+        {
+          query: stationType,
+          location: {
+            lat: currentLocation.latitude,
+            lng: currentLocation.longitude,
+          },
+          radius: 5000, // Adjust the radius as needed
+        },
+        (results, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            setSearchResults(results);
+
+            // Display markers for each result on the map
+            results.forEach((result) => {
+              const resultMarker = new window.google.maps.Marker({
+                position: result.geometry.location,
+                map: mapInstance,
+                title: result.name,
+              });
+
+              // Add click event listener to show details when clicking on a search result marker
+              resultMarker.addListener("click", () => {
+                showDetails(result, resultMarker);
+              });
+            });
+          } else {
+            console.error("Error fetching search results:", status);
+          }
+        }
+      );
+
+      // Add click event listener to show details when clicking on the current location marker
+      currentLocationMarker.addListener("click", () => {
+        showDetails(
+          { name: "Current Location", formatted_address: "You are here" },
+          currentLocationMarker
+        );
+      });
+    }
+  };
+
+  const showDetails = (place, marker) => {
+    if (infoWindow) {
+      infoWindow.close();
+    }
+  
+    const handleMarkerClick = () => {
+      debugger
+      const userLocation = currentLocation
+      if (userLocation) {
+      // Open Google Maps with directions
+      const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${place.geometry.location.lat()},${place.geometry.location.lng()}`;
+      window.open(directionsUrl, "_blank");
+    } else {
+      console.error("Error: Unable to determine user location.");
+    }
+    };
+  
+    const content = (`
+      <div>
+        <h3>${place.name}</h3>
+        <p>${place.formatted_address}</p>
+        <button id="infobutton">Get Directions</button>
+      </div>`)
+  
+    const newInfoWindow = new window.google.maps.InfoWindow({
+      content: content,
+    });
+
+    newInfoWindow.addListener("domready", () => {
+      const infobutton = document.getElementById("infobutton");
+      if (infobutton) {
+        infobutton.addEventListener("click", () => {
+          handleMarkerClick();
+        });
+      }
+    });
+
+    //content.addListener("click", () => {handleMarkerClick});
+  
+    newInfoWindow.open(map, marker);
+  
+    // Add click event listener to the marker for starting directions
+    //marker.addListener("click", handleMarkerClick);
+
+    //infobutton.addListener("click", handleMarkerClick);
+  
+    setInfoWindow(newInfoWindow);
+  };
+
+ const getDirections = (currentLocation, destination) => {
+  if (destination && currentLocation) {
+    const directionsService = new window.google.maps.DirectionsService();
+    const directionsRenderer = new window.google.maps.DirectionsRenderer();
+
+    directionsRenderer.setMap(map);
+
+    const request = {
+      origin: new window.google.maps.LatLng(
+        currentLocation.latitude,
+        currentLocation.longitude
+      ),
+      destination: destination,
+      travelMode: window.google.maps.TravelMode.DRIVING,
+    };
+
+    directionsService.route(request, (response, status) => {
+      if (status === window.google.maps.DirectionsStatus.OK) {
+        // Display the directions on the map
+        directionsRenderer.setDirections(response);
+
+        // Optionally, you can also display additional information about the route
+        const route = response.routes[0];
+        const legs = route.legs[0];
+
+        // Display distance and duration
+        console.log("Distance: ", legs.distance.text);
+        console.log("Duration: ", legs.duration.text);
+      } else {
+        console.error("Error calculating directions:", status);
+      }
+    });
+  }
+};
+
+  useEffect(() => {
+    // Add event listener to initialize the map after the Google Maps JavaScript API is fully loaded
+    if (window.google) {
+      initMap();
+    } else {
+      window.initMap = initMap;
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${APIKEY}&libraries=places&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+  }, [currentLocation, stationType]);
 
   return (
     <Layout>
@@ -44,15 +237,17 @@ const ChargingMap = () => {
       </Link>
 
       <Container maxWidth="xl" sx={{ marginTop: 2, height: "70vh" }}>
-        {/* Replace YOUR_API_KEY with the actual API key you obtained from the Google Cloud Console */}
-        <iframe
-          id="chargingMapIframe"
-          width="100%"
-          height="100%"
-          loading="lazy"
-          allowfullscreen
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
+        {locationPermission === "granted" && currentLocation && (
+          <div
+            id="chargingMapIframe"
+            style={{ width: "100%", height: "100%" }}
+          ></div>
+        )}
+        {locationPermission !== "granted" && (
+          <Typography variant="h6">
+            Please enable location services to view the map.
+          </Typography>
+        )}
       </Container>
     </Layout>
   );
