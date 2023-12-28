@@ -19,10 +19,10 @@ const WelcomePage = () => {
         backgroundColor:"teal"
       }}
     >
-      <Typography variant="h4" gutterBottom fontFamily={'cursive'}>
+      <Typography variant="h4" gutterBottom fontFamily={'sans-serif'} color={'white'}>
         Fill up Fuel !!
       </Typography>
-      <Typography variant="body1" fontFamily={'cursive'}>
+      <Typography variant="body1" fontFamily={'sans-serif'} color={'white'}>
         Explore nearby EV charging and fueling stations at just one Tap!
       </Typography>
 
@@ -45,7 +45,7 @@ const WelcomePage = () => {
             <Button
               variant="contained"
               color="info"
-              sx={{ height: "22vh", width: "22vh", fontFamily: "cursive", backgroundColor:"ghostwhite" , color:"steelblue", borderRadius:"20px" }}
+              sx={{ height: "22vh", width: "22vh", fontFamily: "initial", backgroundColor:"ghostwhite" , color:"steelblue", borderRadius:"20px" }}
             >
               <FlashOnIcon fontSize="large" />
               EV Stations
@@ -60,7 +60,7 @@ const WelcomePage = () => {
             <Button
               variant="outlined"
               color="info"
-              sx={{ height: "22vh", width: "22vh", fontFamily: "cursive", backgroundColor:"ghostwhite" , color:"tomato", borderRadius:"20px" }}
+              sx={{ height: "22vh", width: "22vh", fontFamily: "initial", backgroundColor:"ghostwhite" , color:"tomato", borderRadius:"20px" }}
             >
               <LocalGasStationIcon fontSize="large"  />
               Fuel Stations
