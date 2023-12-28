@@ -32,7 +32,7 @@ const WelcomePage = () => {
         spacing={1}
         justifyContent="space-around"
         alignItems="center"
-        sx={{ height:'65vh', marginTop: 0 }}
+        sx={{ height:'100%', marginTop: 0 }}
       >
         <Grid item>
           {/* Add a clickable tile to go to ChargingMap component */}
