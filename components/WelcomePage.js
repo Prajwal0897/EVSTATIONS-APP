@@ -22,8 +22,8 @@ const WelcomePage = () => {
       {/* <Typography variant="h4" gutterBottom fontFamily={'sans-serif'} color={'white'}>
         Fill up Fuel !!
       </Typography> */}
-      <Typography variant="body1" fontFamily={'sans-serif'} color={'white'}>
-        Explore nearby EV charging and fueling stations at just one Tap!
+      <Typography variant="h5" fontFamily={'sans-serif'} color={'white'}>
+        Explore nearby EV charging and fueling stations at just one Tap!!
       </Typography>
 
       {/* Use Grid to center the button */}
