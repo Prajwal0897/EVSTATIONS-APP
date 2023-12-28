@@ -7,14 +7,14 @@ const Footer = () => {
     <Box
       sx={{
         backgroundColor: "primary.main",
-        color: "teal",
+        color: "turquoise",
         backgroundColor: "#222222",
         p: 2,
         mt: 4,
       }}
     >
       <Typography variant="body2" align="center">
-        © {new Date().getFullYear()} ANIDA-App. All rights reserved.
+        © {new Date().getFullYear()} ANIDA. All rights reserved.
       </Typography>
     </Box>
   );

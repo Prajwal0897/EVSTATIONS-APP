@@ -10,28 +10,29 @@ const WelcomePage = () => {
 
   return (
     <Container
-      maxWidth="md"
+      maxWidth="lg"
       sx={{
         marginTop: 1,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        backgroundColor:"teal"
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        Welcome to ANIDA!
+      <Typography variant="h4" gutterBottom fontFamily={'cursive'}>
+        Fill up Fuel !!
       </Typography>
-      <Typography variant="body1">
-        Explore nearby EV charging and fueling stations at just one click!
+      <Typography variant="body1" fontFamily={'cursive'}>
+        Explore nearby EV charging and fueling stations at just one Tap!
       </Typography>
 
       {/* Use Grid to center the button */}
       <Grid
         container
-        spacing={2}
-        justifyContent="space-evenly"
+        spacing={1}
+        justifyContent="space-around"
         alignItems="center"
-        sx={{ height: "60vh", marginTop: 1 }}
+        sx={{ height:'65vh', marginTop: 0 }}
       >
         <Grid item>
           {/* Add a clickable tile to go to ChargingMap component */}
@@ -42,12 +43,12 @@ const WelcomePage = () => {
             }}
           >
             <Button
-              variant="outlined"
-              color="success"
-              sx={{ height: "25vh", width: "20vh", fontFamily: "sans-serif" }}
+              variant="contained"
+              color="info"
+              sx={{ height: "22vh", width: "22vh", fontFamily: "cursive", backgroundColor:"ghostwhite" , color:"steelblue", borderRadius:"20px" }}
             >
-              <FlashOnIcon />
-              Find EV Stations
+              <FlashOnIcon fontSize="large" />
+              EV Stations
             </Button>
           </Link>
         </Grid>
@@ -59,10 +60,10 @@ const WelcomePage = () => {
             <Button
               variant="outlined"
               color="info"
-              sx={{ height: "25vh", width: "20vh", fontFamily: "sans-serif" }}
+              sx={{ height: "22vh", width: "22vh", fontFamily: "cursive", backgroundColor:"ghostwhite" , color:"tomato", borderRadius:"20px" }}
             >
-              <LocalGasStationIcon />
-              Find Fuel Stations
+              <LocalGasStationIcon fontSize="large"  />
+              Fuel Stations
             </Button>
           </Link>
         </Grid>

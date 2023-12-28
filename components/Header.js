@@ -19,9 +19,9 @@ const Header = () => {
           />
           <Typography
             variant="h6"
-            style={{ color: "teal", fontFamily: "cursive", fontSize: 32 }}
+            style={{ color: "turquoise", fontFamily: "cursive", fontSize: 40 }}
           >
-            TAP N GO!!
+            TAP N GO !!
           </Typography>
         </Box>
       </Toolbar>

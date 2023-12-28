@@ -7,13 +7,8 @@ import Layout from '../components/Layout';
 const Home = () => {
   return (
     <div>
-      <Head>
-        <title>EV Charging App</title>
-      </Head>
-
       <Layout>
         <WelcomePage />
-        {/* <ChargingMap /> */}
       </Layout>
     </div>
   );
