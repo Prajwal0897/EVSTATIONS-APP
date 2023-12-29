@@ -55,7 +55,7 @@ const WelcomePage = () => {
         <Grid item>
           {/* Add a clickable tile to go to ChargingMap component */}
           <Link
-            href={{ pathname: "/mapPage", query: { type: "fuel_stations" } }}
+            href={{ pathname: "/mapPage", query: { type: "petrol pumps fuel stations" } }}
           >
             <Button
               variant="outlined"

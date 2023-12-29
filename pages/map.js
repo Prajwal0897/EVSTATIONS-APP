@@ -11,49 +11,73 @@ const ChargingMap = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [map, setMap] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
-  const [getdirections, setgetdirections] = useState([]);
   const [infoWindow, setInfoWindow] = useState(null);
+  const [resultsFetched, setResultsFetched] = useState(false);
   const stationType = router.query.type || "charging_stations";
   const APIKEY = "AIzaSyDcKMmZlfxMD9ReoN9ipqhSkI3rMS5AzYE"; // Replace with your actual API key
+  const MAPS_API_URL = `https://maps.googleapis.com/maps/api/js?key=${APIKEY}&libraries=places&callback=initMap`;
 
   useEffect(() => {
-    // Check if geolocation is supported by the browser
-    if (navigator.permissions) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then((permissionStatus) => {
-          setLocationPermission(permissionStatus.state);
+    const loadGoogleMapsScript = () => {
+      const script = document.createElement("script");
+      script.src = MAPS_API_URL;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
 
-          if (permissionStatus.state === "granted") {
-            // Geolocation is allowed, proceed to get the current position
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const { latitude, longitude } = position.coords;
-                setCurrentLocation({ latitude, longitude });
-
-                // Load the Google Maps JavaScript API
-                const script = document.createElement("script");
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${APIKEY}&libraries=places&callback=initMap`;
-                script.async = true;
-                script.defer = true;
-                document.head.appendChild(script);
-              },
-              (error) => {
-                console.error("Error getting current location:", error);
-              }
-            );
-          }
-        })
-        .catch((error) => {
-          console.error("Error checking geolocation permission:", error);
-        });
+    if (resultsFetched && window.google) {
+      initMap();
     } else {
-      console.error("Geolocation is not supported by your browser");
+      window.initMap = initMap;
+      loadGoogleMapsScript();
     }
-  }, [stationType]); // Re-run the effect if the stationType changes
+  }, [resultsFetched]);
+
+  const requestGeolocationPermission = async () => {
+    try {
+      const status = await navigator.permissions.query({ name: "geolocation" });
+      setLocationPermission(status.state);
+      
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentLocation({ latitude, longitude });
+        });
+    } catch (error) {
+      console.error("Error checking geolocation permission:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   if (navigator.permissions && navigator.permissions.query) {
+  //     requestGeolocationPermission();
+  //   } else {
+  //     console.error("Geolocation permissions not supported by your browser");
+  //   }
+  // }, []);
+
+
+  useEffect(() => {
+    // Debounce geolocation calls
+    const debouncedGeolocation = setTimeout(() => {
+      if (locationPermission === "granted") {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setCurrentLocation({ latitude, longitude });
+          },
+          (error) => {
+            console.error("Error getting current location:", error);
+          }
+        );
+      }
+    }, 1000);
+
+    return () => clearTimeout(debouncedGeolocation);
+  }, [locationPermission]);
 
   const initMap = () => {
-    if (currentLocation) {
+    if (currentLocation && locationPermission === "granted") {
       const mapInstance = new window.google.maps.Map(
         document.getElementById("chargingMapIframe"),
         {
@@ -91,11 +115,12 @@ const ChargingMap = () => {
             lat: currentLocation.latitude,
             lng: currentLocation.longitude,
           },
-          radius: 5000, // Adjust the radius as needed
+          radius: 10000, // Adjust the radius as needed
         },
         (results, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             setSearchResults(results);
+            setResultsFetched(true);
 
             // Display markers for each result on the map
             results.forEach((result) => {
@@ -126,30 +151,36 @@ const ChargingMap = () => {
     }
   };
 
+  // Your existing showDetails and other functions...
+
   const showDetails = (place, marker) => {
     if (infoWindow) {
       infoWindow.close();
     }
-  
+
     const handleMarkerClick = () => {
-      debugger
-      const userLocation = currentLocation
+      debugger;
+      const userLocation = currentLocation;
       if (userLocation) {
-      // Open Google Maps with directions
-      const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.latitude},${userLocation.longitude}&destination=${place.geometry.location.lat()},${place.geometry.location.lng()}`;
-      window.open(directionsUrl, "_blank");
-    } else {
-      console.error("Error: Unable to determine user location.");
-    }
+        // Open Google Maps with directions
+        const directionsUrl = `https://www.google.com/maps/dir/?api=1&origin=${
+          userLocation.latitude
+        },${
+          userLocation.longitude
+        }&destination=${place.geometry.location.lat()},${place.geometry.location.lng()}`;
+        window.open(directionsUrl, "_blank");
+      } else {
+        console.error("Error: Unable to determine user location.");
+      }
     };
-  
-    const content = (`
+
+    const content = `
       <div>
         <h3>${place.name}</h3>
         <p>${place.formatted_address}</p>
         <button id="infobutton">Get Directions</button>
-      </div>`)
-  
+      </div>`;
+
     const newInfoWindow = new window.google.maps.InfoWindow({
       content: content,
     });
@@ -162,57 +193,13 @@ const ChargingMap = () => {
         });
       }
     });
-
-    //content.addListener("click", () => {handleMarkerClick});
-  
     newInfoWindow.open(map, marker);
-  
-    // Add click event listener to the marker for starting directions
-    //marker.addListener("click", handleMarkerClick);
-
-    //infobutton.addListener("click", handleMarkerClick);
-  
     setInfoWindow(newInfoWindow);
   };
 
- const getDirections = (currentLocation, destination) => {
-  if (destination && currentLocation) {
-    const directionsService = new window.google.maps.DirectionsService();
-    const directionsRenderer = new window.google.maps.DirectionsRenderer();
-
-    directionsRenderer.setMap(map);
-
-    const request = {
-      origin: new window.google.maps.LatLng(
-        currentLocation.latitude,
-        currentLocation.longitude
-      ),
-      destination: destination,
-      travelMode: window.google.maps.TravelMode.DRIVING,
-    };
-
-    directionsService.route(request, (response, status) => {
-      if (status === window.google.maps.DirectionsStatus.OK) {
-        // Display the directions on the map
-        directionsRenderer.setDirections(response);
-
-        // Optionally, you can also display additional information about the route
-        const route = response.routes[0];
-        const legs = route.legs[0];
-
-        // Display distance and duration
-        console.log("Distance: ", legs.distance.text);
-        console.log("Duration: ", legs.duration.text);
-      } else {
-        console.error("Error calculating directions:", status);
-      }
-    });
-  }
-};
-
   useEffect(() => {
     // Add event listener to initialize the map after the Google Maps JavaScript API is fully loaded
-    if (window.google) {
+    if (resultsFetched && window.google) {
       initMap();
     } else {
       window.initMap = initMap;
@@ -223,6 +210,25 @@ const ChargingMap = () => {
       document.head.appendChild(script);
     }
   }, [currentLocation, stationType]);
+
+  
+  const handleRequestLocation = () => {
+    navigator.permissions
+      .request({ name: "geolocation" })
+      .then((permissionStatus) => {
+        setLocationPermission(permissionStatus.state);
+        if (permissionStatus.state === "granted") {
+          // Permission granted, get current location
+          navigator.geolocation.getCurrentPosition((position) => {
+            const { latitude, longitude } = position.coords;
+            setCurrentLocation({ latitude, longitude });
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error requesting geolocation permission:", error);
+      });
+  };
 
   return (
     <Layout>
@@ -238,15 +244,22 @@ const ChargingMap = () => {
 
       <Container maxWidth="xl" sx={{ marginTop: 2, height: "70vh" }}>
         {locationPermission === "granted" && currentLocation && (
-          <div
-            id="chargingMapIframe"
-            style={{ width: "100%", height: "100%" }}
-          ></div>
+          <div id="chargingMapIframe" style={{ width: "100%", height: "100%" }}></div>
         )}
         {locationPermission !== "granted" && (
+          <div>
           <Typography variant="h6">
             Please enable location services to view the map.
           </Typography>
+          <Button
+          variant="contained"
+          color="primary"
+          onClick={() => requestGeolocationPermission()}
+          sx={{ marginTop: 2 }}
+        >
+          Allow Location Access
+        </Button>
+        </div>
         )}
       </Container>
     </Layout>

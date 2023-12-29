@@ -10,11 +10,10 @@ const ChargingMap = () => {
   const [locationPermission, setLocationPermission] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [map, setMap] = useState(null);
-  const [searchResults, setSearchResults] = useState([]);
   const [infoWindow, setInfoWindow] = useState(null);
   const [resultsFetched, setResultsFetched] = useState(false);
   const stationType = router.query.type || "charging_stations";
-  const APIKEY = "AIzaSyDcKMmZlfxMD9ReoN9ipqhSkI3rMS5AzYE"; // Replace with your actual API key
+  const APIKEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
     // Check if geolocation is supported by the browser
@@ -54,7 +53,7 @@ const ChargingMap = () => {
     } else {
       console.error("Geolocation is not supported by your browser");
     }
-  }, [stationType]); // Re-run the effect if the stationType changes
+  }, [stationType, locationPermission]); // Re-run the effect if the stationType changes
 
   const initMap = () => {
     if (currentLocation && locationPermission === "granted") {
@@ -99,7 +98,6 @@ const ChargingMap = () => {
         },
         (results, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            setSearchResults(results);
             setResultsFetched(true);
 
             // Display markers for each result on the map
@@ -132,6 +130,7 @@ const ChargingMap = () => {
   };
 
   const showDetails = (place, marker) => {
+    debugger
     if (infoWindow) {
       infoWindow.close();
     }
