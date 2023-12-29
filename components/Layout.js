@@ -5,7 +5,7 @@ import Footer from './Footer';
 
 const Layout = ({ children }) => {
   return (
-    <div>
+    <div style={{height:'100%'}}>
       <Header />
       {children}
       <Footer />

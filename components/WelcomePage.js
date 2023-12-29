@@ -4,69 +4,135 @@ import { Container, Typography, Button, Grid } from "@mui/material";
 import Link from "next/link";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
-
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 const WelcomePage = () => {
   const [showMessage, setShowMessage] = useState(true);
 
+  const getTypeForIndex = (index) => {
+    switch (index) {
+      case 1:
+        return "chargingstations";
+      case 2:
+        return "petroleum/all";
+      case 3:
+        return "Supermarkets";
+      case 4:
+        return "Cafes";
+      case 5:
+        return "Restaurants";
+      default:
+        return "";
+    }
+  };
+
+  const getIconAndColorForIndex = (index) => {
+    switch (index) {
+      case 1:
+        return { icon: <FlashOnIcon fontSize="large" />, color: "steelblue" };
+      case 2:
+        return {
+          icon: <LocalGasStationIcon fontSize="large" />,
+          color: "green",
+        };
+      case 3:
+        return {
+          icon: <ShoppingCartIcon fontSize="large" />,
+          color: "tan",
+        };
+      case 4:
+        return {
+          icon: <LocalCafeIcon fontSize="large" />,
+          color: "brown",
+        };
+      case 5:
+        return {
+          icon: <RestaurantIcon fontSize="large" />,
+          color: "tomato",
+        };
+      default:
+        return { icon: null, color: "black" };
+    }
+  };
+
+  const getLabelForIndex = (index) => {
+    switch (index) {
+      case 1:
+        return "EV Stations";
+      case 2:
+        return "Fuel Stations";
+      case 3:
+        return "Grocery";
+      case 4:
+        return "Cafes";
+      case 5:
+        return "Restaurants";
+      default:
+        return "";
+    }
+  };
+
   return (
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         marginTop: 1,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor:"teal"
+        backgroundColor: "teal",
+        minHeight: "70vh",
+        //height: 350, // Set the height to 100% of the viewport height
+        overflowY: "auto", // Allow vertical scrolling
+        '@media (max-width:720px)': {
+        backgroundColor: "teal",
+          height:'80vh'
+        },
       }}
     >
-      {/* <Typography variant="h4" gutterBottom fontFamily={'sans-serif'} color={'white'}>
-        Fill up Fuel !!
-      </Typography> */}
-      <Typography variant="h5" fontFamily={'sans-serif'} color={'white'}>
-        Explore nearby EV charging and fueling stations at just one Tap!!
+      <Typography variant="h4" fontFamily={'monospace'} color={'white'}>
+        Explore Locations at just one Tap!!
       </Typography>
 
-      {/* Use Grid to center the button */}
       <Grid
         container
-        spacing={1}
-        justifyContent="space-around"
+        spacing={3}
+        justifyContent="center"
         alignItems="center"
-        sx={{ height:'60vh', marginTop: 0 }}
+        sx={{ marginTop: 2 }}
       >
-        <Grid item>
-          {/* Add a clickable tile to go to ChargingMap component */}
-          <Link
-            href={{
-              pathname: "/mapPage",
-              query: { type: "charging_stations" },
-            }}
-          >
-            <Button
-              variant="contained"
-              color="info"
-              sx={{ height: "22vh", width: "22vh", fontFamily: "initial", backgroundColor:"ghostwhite" , color:"steelblue", borderRadius:"20px" }}
-            >
-              <FlashOnIcon fontSize="large" />
-              EV Stations
-            </Button>
-          </Link>
-        </Grid>
-        <Grid item>
-          {/* Add a clickable tile to go to ChargingMap component */}
-          <Link
-            href={{ pathname: "/mapPage", query: { type: "petroleum/s" } }}
-          >
-            <Button
-              variant="outlined"
-              color="info"
-              sx={{ height: "22vh", width: "22vh", fontFamily: "initial", backgroundColor:"ghostwhite" , color:"tomato", borderRadius:"20px" }}
-            >
-              <LocalGasStationIcon fontSize="large"  />
-              Fuel Stations
-            </Button>
-          </Link>
-        </Grid>
+        {[1, 2, 3, 4, 5].map((item) => {
+          const { icon, color } = getIconAndColorForIndex(item);
+          const label = getLabelForIndex(item);
+
+          return (
+            <Grid item   key={item}>
+              <Link
+                href={{
+                  pathname: "/mapPage",
+                  query: { type: getTypeForIndex(item) },
+                }}
+              >
+                <Button
+                  variant="contained"
+                  color="info"
+                  sx={{
+                    height: "150px",
+                    width: "150px",
+                    fontFamily: "initial",
+                    backgroundColor: "ghostwhite",
+                    color: color,
+                    borderRadius: "20px",
+                  }}
+                >
+                  {icon}
+                  {label}
+                </Button>
+              </Link>
+            </Grid>
+          );
+        })}
       </Grid>
 
       {!showMessage && (
