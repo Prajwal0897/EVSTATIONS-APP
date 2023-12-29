@@ -64,7 +64,7 @@ const ChargingMap = () => {
             lat: currentLocation.latitude,
             lng: currentLocation.longitude,
           },
-          zoom: 12,
+          zoom: 14,
         }
       );
 
