@@ -91,7 +91,7 @@ const WelcomePage = () => {
         },
       }}
     >
-      <Typography variant="h4" fontFamily={'monospace'} color={'white'}>
+      <Typography variant="h5" fontFamily={'monospace'} color={'white'}>
         Explore Locations at just one Tap!!
       </Typography>
 
