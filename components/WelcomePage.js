@@ -59,11 +59,11 @@ const WelcomePage = () => {
   const getLabelForIndex = (index) => {
     switch (index) {
       case 1:
-        return "EV Stations";
+        return "EV Charging Stations";
       case 2:
         return "Fuel Stations";
       case 3:
-        return "Grocery";
+        return "Supermarkets";
       case 4:
         return "Cafes";
       case 5:
