@@ -86,7 +86,7 @@ const WelcomePage = () => {
   return (
     <div>
     <Container
-      maxWidth="lg"
+      maxWidth="xl"
       sx={{
         //marginTop: 3,
         display: "flex",
