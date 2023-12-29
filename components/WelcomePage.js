@@ -1,12 +1,13 @@
 // components/WelcomePage.js
 import React, { useState } from "react";
-import { Container, Typography, Button, Grid } from "@mui/material";
+import { Container, Typography, Button, Grid,Box } from "@mui/material";
 import Link from "next/link";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import MedicationIcon from '@mui/icons-material/Medication';
 const WelcomePage = () => {
   const [showMessage, setShowMessage] = useState(true);
 
@@ -22,6 +23,8 @@ const WelcomePage = () => {
         return "Cafes";
       case 5:
         return "Restaurants";
+        case 6:
+        return "Hospitals";
       default:
         return "";
     }
@@ -30,16 +33,16 @@ const WelcomePage = () => {
   const getIconAndColorForIndex = (index) => {
     switch (index) {
       case 1:
-        return { icon: <FlashOnIcon fontSize="large" />, color: "steelblue" };
+        return { icon: <FlashOnIcon fontSize="large" />, color: "teal" };
       case 2:
         return {
           icon: <LocalGasStationIcon fontSize="large" />,
-          color: "green",
+          color: "steelblue",
         };
       case 3:
         return {
           icon: <ShoppingCartIcon fontSize="large" />,
-          color: "tan",
+          color: "black",
         };
       case 4:
         return {
@@ -49,7 +52,12 @@ const WelcomePage = () => {
       case 5:
         return {
           icon: <RestaurantIcon fontSize="large" />,
-          color: "tomato",
+          color: "orange",
+        };
+        case 6:
+        return {
+          icon: <MedicationIcon fontSize="large" />,
+          color: "red",
         };
       default:
         return { icon: null, color: "black" };
@@ -68,26 +76,29 @@ const WelcomePage = () => {
         return "Cafes";
       case 5:
         return "Restaurants";
+        case 6:
+        return "Hospitals";
       default:
         return "";
     }
   };
 
   return (
+    <div>
     <Container
-      maxWidth="xl"
+      maxWidth="lg"
       sx={{
-        marginTop: 1,
+        //marginTop: 3,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         backgroundColor: "teal",
-        minHeight: "70vh",
+        height: "100vh",
         //height: 350, // Set the height to 100% of the viewport height
         overflowY: "auto", // Allow vertical scrolling
         '@media (max-width:720px)': {
         backgroundColor: "teal",
-          height:'80vh'
+          height:'100vh'
         },
       }}
     >
@@ -97,17 +108,17 @@ const WelcomePage = () => {
 
       <Grid
         container
-        spacing={3}
+        spacing={2}
         justifyContent="center"
         alignItems="center"
-        sx={{ marginTop: 2 }}
+        sx={{ marginTop: 1, flexGrow: 0.5 }}
       >
-        {[1, 2, 3, 4, 5].map((item) => {
+        {[1, 2, 3, 4, 5,6].map((item) => {
           const { icon, color } = getIconAndColorForIndex(item);
           const label = getLabelForIndex(item);
 
           return (
-            <Grid item   key={item}>
+            <Grid item key={item} xs={6} >
               <Link
                 href={{
                   pathname: "/mapPage",
@@ -116,12 +127,12 @@ const WelcomePage = () => {
               >
                 <Button
                   variant="contained"
-                  color="info"
+                  color="inherit"
                   sx={{
                     height: "150px",
-                    width: "150px",
+                    width: "100%",
                     fontFamily: "initial",
-                    backgroundColor: "ghostwhite",
+                    backgroundColor: "azure",
                     color: color,
                     borderRadius: "20px",
                   }}
@@ -135,14 +146,8 @@ const WelcomePage = () => {
         })}
       </Grid>
 
-      {!showMessage && (
-        <Link href="/">
-          <Button variant="outlined" sx={{ marginTop: 2, marginLeft: 2 }}>
-            Back
-          </Button>
-        </Link>
-      )}
     </Container>
+    </div>
   );
 };
 

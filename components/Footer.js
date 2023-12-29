@@ -10,7 +10,7 @@ const Footer = () => {
         color: "turquoise",
         backgroundColor: "#222222",
         p: 2,
-        mt: 4,
+        //mt: 2,
       }}
     >
       <Typography variant="body2" align="center">
