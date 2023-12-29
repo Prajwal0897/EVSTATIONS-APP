@@ -13,7 +13,7 @@ const ChargingMap = () => {
   const [infoWindow, setInfoWindow] = useState(null);
   const [resultsFetched, setResultsFetched] = useState(false);
   const stationType = router.query.type || "charging_stations";
-  const APIKEY = process.env.GOOGLE_MAPS_API_KEY;
+  const APIKEY = process.env.GOOGLE_MAPS_API_KEY || 'AIzaSyDcKMmZlfxMD9ReoN9ipqhSkI3rMS5AzYE';
 
   useEffect(() => {
     // Check if geolocation is supported by the browser
