@@ -64,7 +64,7 @@ const ChargingMap = () => {
             lat: currentLocation.latitude,
             lng: currentLocation.longitude,
           },
-          zoom: 14,
+          zoom: 15,
         }
       );
 
@@ -94,7 +94,7 @@ const ChargingMap = () => {
             lat: currentLocation.latitude,
             lng: currentLocation.longitude,
           },
-          radius: 10000, // Adjust the radius as needed
+          radius: 1, // Adjust the radius as needed
         },
         (results, status) => {
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
