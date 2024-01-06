@@ -209,7 +209,7 @@ const ChargingMap = () => {
         )}
         {locationPermission !== "granted" && (
           <Typography variant="h6">
-            Please enable location services to view the map.
+            Please enable location services to view the map and then Refresh.
           </Typography>
         )}
       </Container>
